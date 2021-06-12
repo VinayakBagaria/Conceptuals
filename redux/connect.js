@@ -18,7 +18,7 @@ function connect(mapStateToProps, mapDispatchToProps) {
           <WrappedComponent
             {...this.props}
             {...mapStateToProps(store.getState(), this.props)}
-            {...WrappedComponent(store.getState(), this.props)}
+            {...mapDispatchToProps(store.getState(), this.props)}
           />
         );
       }
