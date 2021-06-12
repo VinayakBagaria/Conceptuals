@@ -30,10 +30,10 @@ function rootReducer(state, action) {
 
 const store = createStore(rootReducer, initialState);
 
-for (const pair of Array(10).entries()) {
+for (const element of Array(10)) {
   store.dispatch({
     type: 'add',
-    by: pair[0],
+    by: 1,
   });
   console.log(store.getState());
 }
