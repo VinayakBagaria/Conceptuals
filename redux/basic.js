@@ -1,6 +1,6 @@
 function createStore(reducer, initialState) {
   let state = initialState;
-  let listeners = [];
+  let listeners = []; // Array<() => void>
 
   function getState() {
     return state;
