@@ -38,6 +38,12 @@ interface Database<T extends BaseRecord> {
 
   onBeforeAdd(listener: Listener<BeforeSetEvent<T>>): () => void;
   onAfterAdd(listener: Listener<AfterSetEvent<T>>): () => void;
+
+  // Visitor pattern
+  visit(visitor: (item: T) => void): void;
+
+  // Strategy pattern
+  selectBest(scoreStrategy: (item: T) => number): T | undefined;
 }
 
 // Factory pattern
@@ -75,6 +81,31 @@ function createDatabase<T extends BaseRecord>() {
     onAfterAdd(listener: Listener<AfterSetEvent<T>>): () => void {
       return this.afterAddListeners.subscribe(listener);
     }
+
+    visit(visitor: (item: T) => void): void {
+      Object.values(this.db).forEach(visitor);
+    }
+
+    selectBest(scoreStrategy: (item: T) => number): T | undefined {
+      const found: {
+        max: number;
+        item: T | undefined;
+      } = {
+        max: 0,
+        item: undefined,
+      };
+
+      Object.values(this.db).reduce((f, item) => {
+        const score = scoreStrategy(item);
+        if (score > f.max) {
+          f.max = score;
+          f.item = item;
+        }
+        return f;
+      }, found);
+
+      return found.item;
+    }
   }
 
   return InMemoryDatabase;
@@ -106,3 +137,13 @@ PokemonDb.instance.set({
   attack: 100,
   defense: 20,
 });
+
+PokemonDb.instance.visit((item) => {
+  console.log(item.id);
+});
+
+const bestDefense = PokemonDb.instance.selectBest(({ defense }) => defense);
+const bestAttack = PokemonDb.instance.selectBest(({ attack }) => attack);
+
+console.log(`Best attack: ${bestAttack?.id}`);
+console.log(`Best defense: ${bestDefense?.id}`);
