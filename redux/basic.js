@@ -41,13 +41,19 @@ function rootReducer(state, action) {
 
 const store = createStore(rootReducer, initialState);
 
-store.subscribe(() => {
+const unsubscribe = store.subscribe(() => {
   console.log(store.getState());
 });
 
-for (const element of Array(10)) {
+for (const element of Array(10).entries()) {
   store.dispatch({
     type: 'add',
     by: 1,
   });
+  if (element[0] === 5) {
+    unsubscribe();
+  }
 }
+
+console.log('finally');
+console.log(store.getState());
