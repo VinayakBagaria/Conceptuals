@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transform</title>
+  <style>
+    body {
+      background-color: blue;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .some-div {
+      background-color: red;
+      height: 120px;
+      width: 120px;
+      position: relative;
+      animation: someAnimation 3s linear;
+      animation-direction: alternate;
+      animation-iteration-count: infinite;
+    }
+
+    @keyframes someAnimation {
+      0% {
+        transform: translate(0, 0);
+      }
+
+      100% {
+        transform: translate(300px, 3px);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="some-div">content</div>
+</body>
+
+</html>
