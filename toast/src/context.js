@@ -4,11 +4,11 @@ export const ToastContext = createContext();
 
 const ToastContextProvider = ({ children }) => {
   // {id: 1, text: "body"}
-  const [t, setT] = useState([]);
+  const [toasts, setToasts] = useState([]);
 
   const addToast = (newToastText) => {
     const newId = new Date() * 1000;
-    setT((x) => [
+    setToasts((x) => [
       ...x,
       {
         id: newId,
@@ -17,15 +17,27 @@ const ToastContextProvider = ({ children }) => {
     ]);
 
     setTimeout(() => {
-      setT((x) => x.filter((y) => y.id !== newId));
+      // removeToast();
     }, 2000);
+  };
+
+  const removeToast = (toastId) => {
+    setToasts((allToasts) =>
+      allToasts.filter((eachToast) => eachToast.id !== toastId)
+    );
+  };
+
+  const removeAll = () => {
+    setToasts([]);
   };
 
   return (
     <ToastContext.Provider value={addToast}>
-      {t.map((eachT) => (
-        <p key={eachT.id}>{eachT.text}</p>
-      ))}
+      <div className="toast-provider">
+        {toasts.map((eachT) => (
+          <p key={eachT.id}>{eachT.text}</p>
+        ))}
+      </div>
       {children}
     </ToastContext.Provider>
   );
