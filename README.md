@@ -1,6 +1,8 @@
-# Internals
+# Conceptuals
 
 Warehouse of internal implementations of libraries, patterns, nuances that we come across in JS world.
+
+## Topics
 
 * React - implementation of render and createElement
 * Redux - implementation of redux with subscriptions and immutable state dispatches
