@@ -2,7 +2,15 @@
   position: fixed;
   top: 2rem;
   right: 2rem;
+  bottom: 0;
   max-width: 400px;
+  overflow-y: scroll;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.toast-provider::-webkit-scrollbar {
+  display: none;
 }
 
 .toast-provider p {
