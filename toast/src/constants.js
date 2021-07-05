@@ -43,12 +43,12 @@ export const QUOTES_ARRAY = [
     cite: 'George Carrette',
   },
   {
-    qoute:
+    quote:
       "I don't care if it works on your machine! We are not shipping your machine!",
     cite: 'Vidiu Platon',
   },
   {
-    qoute:
+    quote:
       'Computer science education cannot make anybody an expert programmer any more than studying brushes and pigment can make somebody an expert painter.',
     cite: 'Eric S. Raymond',
   },

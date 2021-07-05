@@ -13,7 +13,7 @@
   display: none;
 }
 
-.toast-provider p {
+.each-toast-wrapper {
   background-color: #3498db;
   margin: 0 0 1rem;
   padding: 8px;

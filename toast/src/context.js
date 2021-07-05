@@ -1,4 +1,5 @@
 import { createContext, useState } from 'react';
+import Toast from './Toast';
 
 export const ToastContext = createContext();
 
@@ -6,19 +7,15 @@ const ToastContextProvider = ({ children }) => {
   // {id: 1, text: "body"}
   const [toasts, setToasts] = useState([]);
 
-  const addToast = (newToastText) => {
+  const addToast = (newToastText, options = {}) => {
     const newId = new Date() * 1000;
-    setToasts((x) => [
-      ...x,
-      {
-        id: newId,
-        text: newToastText,
-      },
-    ]);
-
-    setTimeout(() => {
-      // removeToast();
-    }, 2000);
+    const newToastObject = {
+      id: newId,
+      text: newToastText,
+      delay: options.delay ?? 2000,
+      ...options,
+    };
+    setToasts((oldToast) => [...oldToast, newToastObject]);
   };
 
   const removeToast = (toastId) => {
@@ -32,10 +29,16 @@ const ToastContextProvider = ({ children }) => {
   };
 
   return (
-    <ToastContext.Provider value={addToast}>
+    <ToastContext.Provider value={{ addToast, removeAll }}>
       <div className="toast-provider">
-        {toasts.map((eachT) => (
-          <p key={eachT.id}>{eachT.text}</p>
+        {toasts.map((eachToast) => (
+          <Toast
+            key={eachToast.id}
+            onDismissCallback={() => removeToast(eachToast.id)}
+            delay={eachToast.delay ?? 0}
+          >
+            {eachToast.text}
+          </Toast>
         ))}
       </div>
       {children}

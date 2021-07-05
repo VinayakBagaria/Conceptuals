@@ -14,6 +14,6 @@ function genRandomNumberInRange(min, max) {
 }
 
 export function genQuotesInArray() {
-  const index = genRandomNumberInRange(0, QUOTES_ARRAY.length - 2);
+  const index = genRandomNumberInRange(0, QUOTES_ARRAY.length - 1);
   return QUOTES_ARRAY[index].quote;
 }

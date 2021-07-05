@@ -7,10 +7,15 @@ const Foo = () => {
 
   const handleClick = () => {
     const quote = genQuotesInArray();
-    ctx(quote);
+    ctx.addToast(quote);
   };
 
-  return <button onClick={handleClick}>Add Toast</button>;
+  return (
+    <>
+      <button onClick={handleClick}>Add Toast</button>
+      <button onClick={ctx.removeAll}>Remove All</button>
+    </>
+  );
 };
 
 export default Foo;
