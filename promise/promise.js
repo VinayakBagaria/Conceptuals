@@ -24,10 +24,19 @@ class CPromise {
   // creates the fulfill/reject functions that are arguments of the executor
   doResolve(executor) {
     const context = this;
+    let isCalled = false;
     function wrapFulfill(value) {
+      if (isCalled) {
+        return;
+      }
+      isCalled = true;
       context.fulfill(value);
     }
     function wrapReject(reason) {
+      if (isCalled) {
+        return;
+      }
+      isCalled = true;
       context.reject(reason);
     }
 
