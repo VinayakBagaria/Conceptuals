@@ -1,0 +1,24 @@
+{
+  "name": "internals",
+  "version": "1.0.0",
+  "description": "Warehouse of internal implementations of libraries, patterns, nuances that we come across in JS world.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest promise"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VinayakBagaria/Conceptuals.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/VinayakBagaria/Conceptuals/issues"
+  },
+  "homepage": "https://github.com/VinayakBagaria/Conceptuals#readme",
+  "devDependencies": {
+    "@types/jest": "^27.0.1",
+    "jest": "^27.0.6"
+  }
+}
