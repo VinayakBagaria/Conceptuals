@@ -25,6 +25,7 @@ class CPromise {
   doResolve(executor) {
     const context = this;
     let isCalled = false;
+
     function wrapFulfill(value) {
       if (isCalled) {
         return;
@@ -32,6 +33,7 @@ class CPromise {
       isCalled = true;
       context.fulfill(value);
     }
+
     function wrapReject(reason) {
       if (isCalled) {
         return;
@@ -40,7 +42,11 @@ class CPromise {
       context.reject(reason);
     }
 
-    executor(wrapFulfill, wrapReject);
+    try {
+      executor(wrapFulfill, wrapReject);
+    } catch (err) {
+      wrapReject(err);
+    }
   }
 
   then(onFulfilled, onRejected) {

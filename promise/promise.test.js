@@ -86,3 +86,15 @@ it('when a promise is rejected, it should not be fulfilled with another value', 
   expect(onFulfilled.mock.calls.length).toBe(0);
   expect(promise.state).toBe('REJECTED');
 });
+
+it('when the executor itself fails, the promise should transition to REJECTED state with a reason', () => {
+  const executorReason = new Error(reason);
+  const onRejected = jest.fn();
+  const promise = new CPromise((resolve, reject) => {
+    throw executorReason;
+  });
+  promise.then(null, onRejected);
+  expect(onRejected.mock.calls.length).toBe(1);
+  expect(onRejected.mock.calls[0][0]).toBe(executorReason);
+  expect(promise.state === 'REJECTED');
+});
