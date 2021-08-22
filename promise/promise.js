@@ -18,7 +18,7 @@ class CPromise {
 
   reject(reason) {
     this.state = REJECTED;
-    this.reason = reason;
+    this.value = reason;
   }
 
   // creates the fulfill/reject functions that are arguments of the executor
@@ -32,6 +32,11 @@ class CPromise {
     }
 
     executor(wrapFulfill, wrapReject);
+  }
+
+  then(onFulfilled, onRejected) {
+    const cb = this.state === FULFILLED ? onFulfilled : onRejected;
+    cb(this.value);
   }
 }
 

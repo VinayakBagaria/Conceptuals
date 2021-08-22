@@ -24,9 +24,36 @@ it('transitions to the FULFIILLED state with a value', () => {
 });
 
 it('transitions to the REJECTED state with a reason', () => {
-  const reason = 'failed';
+  const reason = 'failure';
   const promise = new CPromise((fulfill, reject) => {
     reject(reason);
   });
   expect(promise.state).toBe('REJECTED');
+});
+
+it('should have a .then method', () => {
+  const promise = new CPromise(() => {});
+  expect(typeof promise.then).toBe('function');
+});
+
+it('should call the onFulfilled method when a promise is in a FULFIllED state', () => {
+  const value = 'success';
+  const onFulfilled = jest.fn();
+  const promise = new CPromise((fulfill, reject) => {
+    fulfill(value);
+  }).then(onFulfilled);
+
+  expect(onFulfilled.mock.calls.length).toBe(1);
+  expect(onFulfilled.mock.calls[0][0]).toBe(value);
+});
+
+it('should call the onRejected method when a promise is in a REJECTED state', () => {
+  const reason = 'failure';
+  const onRejected = jest.fn();
+  const promise = new CPromise((fulfill, reject) => {
+    reject(reason);
+  }).then(null, onRejected);
+
+  expect(onRejected.mock.calls.length).toBe(1);
+  expect(onRejected.mock.calls[0][0]).toBe(reason);
 });
