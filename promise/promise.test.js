@@ -101,6 +101,7 @@ it('should queue callbacks when the promise is not fulfilled immediately', (done
   });
   const onFulfilled = jest.fn();
   promise.then(onFulfilled);
+
   // resolve will happen after the 1ms timeout expires
   expect(onFulfilled.mock.calls.length).toBe(0);
 
@@ -121,24 +122,72 @@ it('should queue callbacks when the promise is not fulfilled immediately', (done
 
 it('should queue callbacks when the promise is not rejected immediately', (done) => {
   const promise = new CPromise((resolve, reject) => {
-    setTimeout(reject, 1, value);
+    setTimeout(reject, 1, reason);
   });
   const onRejected = jest.fn();
   promise.then(null, onRejected);
+
   // reject will happen after the 1ms timeout expires
   expect(onRejected.mock.calls.length).toBe(0);
 
   setTimeout(() => {
     // called once
     expect(onRejected.mock.calls.length).toBe(1);
-    expect(onRejected.mock.calls[0][0]).toBe(value);
+    expect(onRejected.mock.calls[0][0]).toBe(reason);
     promise.then(null, onRejected);
   }, 5);
 
   setTimeout(() => {
     // called twice because of the first one
     expect(onRejected.mock.calls.length).toBe(2);
-    expect(onRejected.mock.calls[1][0]).toBe(value);
+    expect(onRejected.mock.calls[1][0]).toBe(reason);
     done();
   }, 10);
+});
+
+it('.then should return a new promise', () => {
+  expect(function () {
+    const qOnFulfilled = jest.fn();
+    const rOnFulfilled = jest.fn();
+
+    const p = new CPromise((resolve) => resolve());
+    const q = p.then(qOnFulfilled);
+    const r = q.then(rOnFulfilled);
+  }).not.toThrow();
+});
+
+it("if .then's onFulfilled is called without errors, it should be transition to FULFILLED", () => {
+  const f1 = jest.fn();
+  new CPromise((resolve) => resolve()).then(() => value).then(f1);
+  expect(f1.mock.calls.length).toBe(1);
+  expect(f1.mock.calls[0][0]).toBe(value);
+});
+
+it("if .then's onRejected is called without errors, it should be transition to FULFILLED", () => {
+  const f1 = jest.fn();
+  new CPromise((resolve, reject) => reject()).then(null, () => value).then(f1);
+  expect(f1.mock.calls.length).toBe(1);
+  expect(f1.mock.calls[0][0]).toBe(value);
+});
+
+it("if .then's onFulfilled is called and has an error, it should be transition to REJECTED", () => {
+  const f1 = jest.fn();
+  new CPromise((resolve) => resolve())
+    .then(() => {
+      throw reason;
+    })
+    .then(null, f1);
+  expect(f1.mock.calls.length).toBe(1);
+  expect(f1.mock.calls[0][0]).toBe(reason);
+});
+
+it("if .then's onRejected is called and has an error, it should be transition to REJECTED", () => {
+  const f1 = jest.fn();
+  new CPromise((resolve, reject) => reject())
+    .then(null, () => {
+      throw reason;
+    })
+    .then(null, f1);
+  expect(f1.mock.calls.length).toBe(1);
+  expect(f1.mock.calls[0][0]).toBe(reason);
 });

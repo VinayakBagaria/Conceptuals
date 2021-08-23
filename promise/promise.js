@@ -10,76 +10,91 @@ class CPromise {
     // .then handler queue
     this.queue = [];
     // call the executor immediately
-    this.doResolve(executor);
-  }
-
-  // checks the state of the current promise
-  // - queue for later use if PENDING
-  // - call the handler if not PENDING
-  handle(handler) {
-    if (this.state === PENDING) {
-      // queue if pending
-      this.queue.push(handler);
-    } else {
-      // execute immediately
-      const cb =
-        this.state === FULFILLED ? handler.onFulfilled : handler.onRejected;
-      cb(this.value);
-    }
+    doResolve(this, executor);
   }
 
   then(onFulfilled, onRejected) {
-    this.handle({
+    // empty executor
+    const promise = new CPromise(() => {});
+    handle(this, {
+      promise,
       onFulfilled,
       onRejected,
     });
+    return promise;
+  }
+}
+
+// invoke all the handlers store for the promise
+function finale(promise) {
+  const length = promise.queue.length;
+  for (let i = 0; i < length; i += 1) {
+    handle(promise, promise.queue[i]);
+  }
+}
+
+function fulfill(promise, value) {
+  promise.state = FULFILLED;
+  promise.value = value;
+  finale(promise);
+}
+
+function reject(promise, reason) {
+  promise.state = REJECTED;
+  promise.value = reason;
+  finale(promise);
+}
+
+function handleResolved(promise, handler) {
+  const cb =
+    promise.state === FULFILLED ? handler.onFulfilled : handler.onRejected;
+
+  // execute the handler and transition according to the rules
+  try {
+    const value = cb(promise.value);
+    fulfill(handler.promise, value);
+  } catch (err) {
+    reject(handler.promise, err);
+  }
+}
+
+// checks the state of the current promise
+// - queue for later use if PENDING
+// - call the handler if not PENDING
+function handle(promise, handler) {
+  if (promise.state === PENDING) {
+    // queue if PENDING
+    promise.queue.push(handler);
+  } else {
+    // execute immediately
+    handleResolved(promise, handler);
+  }
+}
+
+// creates the fulfill/reject functions that are arguments of the executor
+function doResolve(promise, executor) {
+  let isCalled = false;
+
+  function wrapFulfill(value) {
+    if (isCalled) {
+      return;
+    }
+    isCalled = true;
+    fulfill(promise, value);
   }
 
-  // invoke all the handlers store for the promise
-  finale() {
-    for (const handler of this.queue) {
-      this.handle(handler);
+  function wrapReject(reason) {
+    if (isCalled) {
+      return;
     }
+    isCalled = true;
+    reject(promise, reason);
   }
 
-  fulfill(value) {
-    this.state = FULFILLED;
-    this.value = value;
-    this.finale();
-  }
-
-  reject(reason) {
-    this.state = REJECTED;
-    this.value = reason;
-    this.finale();
-  }
-
-  // creates the fulfill/reject functions that are arguments of the executor
-  doResolve(executor) {
-    const context = this;
-    let isCalled = false;
-
-    function wrapFulfill(value) {
-      if (isCalled) {
-        return;
-      }
-      isCalled = true;
-      context.fulfill(value);
-    }
-
-    function wrapReject(reason) {
-      if (isCalled) {
-        return;
-      }
-      isCalled = true;
-      context.reject(reason);
-    }
-
-    try {
-      executor(wrapFulfill, wrapReject);
-    } catch (err) {
-      wrapReject(err);
-    }
+  try {
+    executor(wrapFulfill, wrapReject);
+  } catch (err) {
+    wrapReject(err);
   }
 }
 
