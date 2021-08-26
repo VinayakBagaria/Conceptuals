@@ -1,4 +1,4 @@
-interface Logistic {
+export interface Logistic {
   operation(): string;
 }
 
@@ -14,7 +14,7 @@ class Train implements Logistic {
   }
 }
 
-class VehicleFactory {
+export class VehicleFactory {
   public static createVehicle(vehicleType: 'truck' | 'train'): Logistic {
     if (vehicleType === 'truck') {
       return new Truck();
@@ -25,9 +25,3 @@ class VehicleFactory {
     }
   }
 }
-
-const truck = VehicleFactory.createVehicle('truck');
-console.log(truck.operation());
-
-const train = VehicleFactory.createVehicle('train');
-console.log(train.operation());
