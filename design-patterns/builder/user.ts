@@ -3,7 +3,7 @@ export class UserBuilder {
   age: number;
   phone: string;
 
-  constructor(private nameValue: string) {
+  constructor(nameValue: string) {
     this.name = nameValue;
     this.age = 0;
     this.phone = '';

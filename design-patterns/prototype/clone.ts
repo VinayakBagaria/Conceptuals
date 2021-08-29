@@ -1,6 +1,6 @@
 export class Concrete {
   #name: string;
-  constructor(private nameField: string) {
+  constructor(nameField: string) {
     this.#name = nameField;
   }
 

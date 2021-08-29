@@ -7,21 +7,21 @@ export interface DoorFactory {
 }
 
 export class WoodenDoorFactory implements DoorFactory {
-  public makeDoor() {
+  public makeDoor(): Door {
     return new WoodenDoor();
   }
 
-  public makeFittingExpert() {
+  public makeFittingExpert(): Expert {
     return new Carpenter();
   }
 }
 
 export class IronDoorFactory implements DoorFactory {
-  public makeDoor() {
+  public makeDoor(): Door {
     return new IronDoor();
   }
 
-  public makeFittingExpert() {
+  public makeFittingExpert(): Expert {
     return new Welder();
   }
 }
