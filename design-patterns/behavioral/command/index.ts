@@ -1,6 +1,6 @@
 import { Bulb } from './receiver';
-import { RemoteControl } from './remote';
-import { TurnOn, TurnOff } from './turnOnOff';
+import { RemoteControl } from './invoker';
+import { TurnOn, TurnOff } from './allCommands';
 
 const bulb = new Bulb();
 
